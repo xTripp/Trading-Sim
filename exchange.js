@@ -18,6 +18,6 @@ function getPrice(symbol) {
     })
 }
 
-function order() {
-    
+export {
+    getPrice
 }
