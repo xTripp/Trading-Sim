@@ -2,19 +2,26 @@ const { Portfolio } = require('../../portfolio.js');
 const ex = require('../../exchange.js');
 
 const basic = new Portfolio('basic');
+let heartbeat;
 
 function buyLowSellHigh() {
-    let previousPrice = ex.getPrice('COIN', ['c'], (err, data) => {
-        if (err) {
-            return data.reduce((val, i) => {
-                val[i] = 0.00;
-                return val;
-            }, {});
-        } else {
-            return data;
-        }
+    ex.getQuote('COIN')
+    .then(data => {
+        console.log(data);
     });
-    console.log(previousPrice);
 }
 
-buyLowSellHigh();
+function run(step = 1000) {
+    heartbeat = setInterval(() => {
+        buyLowSellHigh();
+    }, step);
+}
+
+function freeze() {
+    clearInterval(heartbeat);
+}
+
+module.exports = {
+    run,
+    freeze
+};
