@@ -5,19 +5,23 @@ const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = process.env.API_KEY;
 const finnhubClient = new finnhub.DefaultApi();
 
-function getPrice(symbol) {
+function getPrice(symbol, vals=['c']) {
     finnhubClient.quote(symbol, (err, data, response) => {
         if (err) {
-            console.error(`Error: ${err}`);
-            console.error(err.status);
+            console.error(`Error ${err.status}: ${err}`);
             return;
         }
-        console.log(response.headers['x-ratelimit-remaining']);
-        console.log(response.headers['x-ratelimit-reset']);
-        return data;
+
+        const info = Array.from(Object.keys(data)).filter(val => val in vals);
+        return info;
     })
 }
 
-export {
-    getPrice
+function apiStats() {
+    console.log(response.headers['x-ratelimit-remaining']);
+    console.log(response.headers['x-ratelimit-reset']);
 }
+
+module.exports = {
+    getPrice
+};

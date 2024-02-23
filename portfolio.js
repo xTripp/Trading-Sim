@@ -1,4 +1,4 @@
-import { Journal } from './journal.js'
+const { Journal } = require('./journal.js');
 
 class Portfolio {
     constructor(name) {
@@ -43,6 +43,6 @@ class Portfolio {
     }
 }
 
-export {
+module.exports = {
     Portfolio
-}
+};

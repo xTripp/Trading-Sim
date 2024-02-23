@@ -1,4 +1,4 @@
-const fs = require('fs');
+const { fs } = require('fs');
 
 class Journal {
     constructor(name) {
@@ -10,14 +10,14 @@ class Journal {
 
         fs.writeFile(this.path, data, 'utf-8', (err) => {
             if (err) {
-                console.error(`Failed to record ${symbol} ${type}`);
+                console.error(`Failed to record $${symbol} ${type}`);
             } else {
-                console.log(`${symbol} ${type} recorded successfully!`);
+                console.log(`$${symbol} ${type} recorded successfully!`);
             }
         });
     }
 }
 
-export {
+module.exports = {
     Journal
-}
+};
