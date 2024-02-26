@@ -9,6 +9,10 @@ class Portfolio {
 
     buy(symbol, count, price) {
         const cost = count * price;
+        if (cost > this.balance) {
+            console.log(`Insufficient funds. You are buying ${count} $${symbol} shares for $${cost}, but you only have $${this.balance}`);
+            return;
+        }
         this.balance -= cost;
 
         const asset = {
@@ -19,9 +23,16 @@ class Portfolio {
         this.portfolio.push(asset);
 
         this.journal.recordTrade(symbol, 'buy', count, price, new Date());
+        console.log(`$${symbol} buy. New balance: ${this.balance}`);
     }
 
     sell(symbol, count, price) {
+        const total = this.portfolio.reduce((total, asset) => asset.symbol === symbol ? total + asset.quantity : total, 0);
+        if (total < count) {
+            console.log(`Insufficient shares. You are selling ${count} $${symbol} shares but you only have ${total}`);
+            return;
+        }
+
         const profit = count * price;
         this.balance += profit;
     
@@ -40,6 +51,7 @@ class Portfolio {
         });
 
         this.journal.recordTrade(symbol, 'sell', count, price, new Date());
+        console.log(`$${symbol} sell. New balance: ${this.balance}`);
     }
 }
 

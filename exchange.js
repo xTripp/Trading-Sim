@@ -1,4 +1,6 @@
 const finnhubClient = require('./server.js');
+let apiCalls = 0;
+let apiReset = 0;
 
 function getQuote(symbol, vals = ['c']) {
     return new Promise((resolve) => {
@@ -9,16 +11,19 @@ function getQuote(symbol, vals = ['c']) {
             } else {
                 resolve(Object.fromEntries(Object.keys(data).filter(key => vals.includes(key)).map(key => [key, data[key]])));
             }
+            apiStats(response);
         });
     });
 }
 
 
-function apiStats() {
-    console.log(response.headers['x-ratelimit-remaining']);
-    console.log(response.headers['x-ratelimit-reset']);
+function apiStats(response) {
+    apiCalls = response.headers['x-ratelimit-remaining'];
+    apiReset = response.headers['x-ratelimit-reset']
 }
 
 module.exports = {
+    apiCalls,
+    apiReset,
     getQuote
 };
