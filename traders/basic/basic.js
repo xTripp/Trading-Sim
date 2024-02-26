@@ -2,7 +2,7 @@ const { Portfolio } = require('../../portfolio.js');
 const ex = require('../../exchange.js');
 
 const name = 'basic';
-const basic = new Portfolio(name);
+const portfolio = new Portfolio(name);
 const interest = ['COIN', 'TSLA', 'NVDA', 'AMD', 'AAPL'];
 let heartbeat;
 
@@ -12,9 +12,9 @@ function buyLowSellHigh(stock) {
         .then(data => {
             if (prev[stock] !== undefined) {
                 if (data.c > prev[stock]) {
-                    basic.buy(stock, 1, data.c);
+                    portfolio.buy(stock, 1, data.c);
                 } else if (data.c < prev[stock]) {
-                    basic.sell(stock, 1, data.c);
+                    portfolio.sell(stock, 1, data.c);
                 }
             }
             prev[stock] = data.c;
@@ -34,6 +34,7 @@ function freeze() {
 }
 
 module.exports = {
+    portfolio,
     run,
     freeze
 };

@@ -2,16 +2,24 @@ class Trader {
     constructor(name, path) {
         this.name = name;
         this.path = path;
-        this.pulse = require(this.path);
+        this.trader = require(this.path);
         this.status = 'waiting';
     }
 
     start() {
-        this.pulse.run();
+        this.trader.run();
     }
 
     stop() {
-        this.pulse.freeze();
+        this.trader.freeze();
+    }
+
+    getBal() {
+        return this.trader.portfolio.balance;
+    }
+
+    getPortfolio() {
+        return this.trader.portfolio.portfolio;
     }
 }
 
