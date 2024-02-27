@@ -22,7 +22,7 @@ class Portfolio {
         }
         this.portfolio.push(asset);
 
-        this.journal.recordTrade(symbol, 'buy', count, price, new Date());
+        this.journal.recordTrade(symbol, 'buy', count, price, formatDate(new Date()));
         console.log(`$${symbol} buy. New balance: ${this.balance}`);
     }
 
@@ -50,9 +50,20 @@ class Portfolio {
             return true;
         });
 
-        this.journal.recordTrade(symbol, 'sell', count, price, new Date());
+        this.journal.recordTrade(symbol, 'sell', count, price, formatDate(new Date()));
         console.log(`$${symbol} sell. New balance: ${this.balance}`);
     }
+}
+
+function formatDate(date) {
+    return date.toLocaleString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    }).replace(',', '');
 }
 
 module.exports = {

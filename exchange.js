@@ -7,7 +7,7 @@ function getQuote(symbol, vals = ['c']) {
         finnhubClient.quote(symbol, (err, data, response) => {
             if (err) {
                 console.error(`Error status ${err.status}: ${err}`);
-                resolve(Object.fromEntries(Object.keys(data).filter(key => vals.includes(key)).map(key => [key, 0.00])));
+                resolve(Object.fromEntries(vals.map(key => [key, 0.00])));
             } else {
                 resolve(Object.fromEntries(Object.keys(data).filter(key => vals.includes(key)).map(key => [key, data[key]])));
             }
@@ -19,7 +19,7 @@ function getQuote(symbol, vals = ['c']) {
 
 function apiStats(response) {
     apiCalls = response.headers['x-ratelimit-remaining'];
-    apiReset = response.headers['x-ratelimit-reset']
+    apiReset = response.headers['x-ratelimit-reset'];
 }
 
 module.exports = {

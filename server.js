@@ -9,7 +9,5 @@ module.exports = new finnhub.DefaultApi();
 
 const basic = new Trader('basic', './traders/basic/basic.js');
 basic.start();
-console.log(basic.getPortfolio());
 
 // save portfolio
-
