@@ -8,12 +8,12 @@ class Portfolio {
     }
 
     buy(symbol, count, price) {
-        const cost = count * price;
+        const cost = (count * price).toFixed(2);
         if (cost > this.balance) {
             console.log(`Insufficient funds. You are buying ${count} $${symbol} shares for $${cost}, but you only have $${this.balance}`);
             return;
         }
-        this.balance -= cost;
+        this.balance -= parseFloat(cost);
 
         const asset = {
             symbol: symbol,
@@ -33,8 +33,8 @@ class Portfolio {
             return;
         }
 
-        const profit = count * price;
-        this.balance += profit;
+        const profit = (count * price).toFixed(2);
+        this.balance += parseFloat(profit);
     
         let remainingCount = count;
         this.portfolio = this.portfolio.filter(asset => {
