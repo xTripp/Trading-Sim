@@ -8,12 +8,13 @@ class Portfolio {
     }
 
     buy(symbol, count, price) {
-        const cost = (count * (price * 100)) / 100;  // convert to cents for floating point arithmetic
+        const cost = Math.round(count * price * 100) / 100;  // Convert to cents and round for floating point arithmetic
         if (cost > this.balance) {
             console.log(`Insufficient funds. You are buying ${count} $${symbol} shares for $${cost}, but you only have $${this.balance}`);
             return;
         }
-        this.balance = ((this.balance * 100) - (cost * 100)) / 100;  // convert to cents for floating point arithmetic
+        this.balance = Math.round((this.balance * 100 - cost * 100) / 100);  // Convert to cents and round for floating point arithmetic
+        
 
         const asset = {
             symbol: symbol,
@@ -33,8 +34,9 @@ class Portfolio {
             return;
         }
 
-        const profit = (count * (price * 100)) / 100;  // convert to cents for floating point arithmetic
-        this.balance = ((this.balance * 100) + (profit * 100)) / 100;  // convert to cents for floating point arithmetic
+        const profit = Math.round(count * price * 100) / 100;  // Convert to cents and round for floating point arithmetic
+        this.balance = Math.round((this.balance * 100 + profit * 100) / 100);  // Convert to cents and round for floating point arithmetic
+        
     
         let remainingCount = count;
         this.portfolio = this.portfolio.filter(asset => {

@@ -8,7 +8,7 @@ import './App.css';
 function App() {
     return (
         <DndProvider backend={HTML5Backend}>
-            <Navbar></Navbar>
+            <Navbar />
             <div className="App">
                 <div className="chart-container">
                     <CandlestickChart id="chart1" />
