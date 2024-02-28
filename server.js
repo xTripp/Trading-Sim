@@ -1,6 +1,6 @@
 require('dotenv').config();
 const finnhub = require('finnhub');
-const express = require('express')
+const express = require('express');
 const fs = require('fs');
 const path = require('path');
 

@@ -8,6 +8,9 @@ class Trader {
 
     start() {
         this.trader.run();
+        setInterval(() => {
+            console.log(this.getNet());
+        }, 10000);
     }
 
     stop() {
@@ -33,12 +36,11 @@ class Trader {
     }
 
     getNet() {
-        let net = this.getBal();
+        let net = Math.round(this.getBal() * 100);
         const portfolio = this.getPortfolio();
     
         for (const asset of portfolio) {
-            const assetValue = Math.round(asset.quantity * asset.price * 100);
-            net = Math.round((net * 100 + assetValue) / 100);
+            net += Math.round(asset.quantity * (asset.price * 100));
         }
     
         return net / 100;
