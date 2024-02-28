@@ -11,8 +11,6 @@ class Journal {
         fs.appendFile(this.path, data, 'utf-8', (err) => {
             if (err) {
                 console.error(`Failed to record $${symbol} ${type}`);
-            } else {
-                console.log(`$${symbol} ${type} recorded successfully!`);
             }
         });
     }

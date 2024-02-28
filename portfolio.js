@@ -10,11 +10,10 @@ class Portfolio {
     buy(symbol, count, price) {
         const cost = Math.round(count * (price * 100)) / 100;  // Convert to cents and round for floating point arithmetic
         if (cost > this.balance) {
-            console.log(`Insufficient funds. You are buying ${count} $${symbol} shares for $${cost}, but you only have $${this.balance}`);
-            return;
+            return `Insufficient funds. You are buying ${count} $${symbol} shares for $${cost}, but you only have $${this.balance}`;
         }
+
         this.balance = Math.round((this.balance * 100) - (cost * 100)) / 100;  // Convert to cents and round for floating point arithmetic
-        
 
         const asset = {
             symbol: symbol,
@@ -24,14 +23,13 @@ class Portfolio {
         this.portfolio.push(asset);
 
         this.journal.recordTrade(symbol, 'buy', count, price, formatDate(new Date()));
-        console.log(`$${symbol} buy. New balance: ${this.balance}`);
+        return `$${symbol} buy. New balance: ${this.balance}`;
     }
 
     sell(symbol, count, price) {
         const total = this.portfolio.reduce((total, asset) => asset.symbol === symbol ? total + asset.quantity : total, 0);
         if (total < count) {
-            console.log(`Insufficient shares. You are selling ${count} $${symbol} shares but you have ${total}`);
-            return;
+            return `Insufficient shares. You are selling ${count} $${symbol} shares but you have ${total}`;
         }
 
         const profit = Math.round(count * (price * 100)) / 100;  // Convert to cents and round for floating point arithmetic
@@ -53,7 +51,7 @@ class Portfolio {
         });
 
         this.journal.recordTrade(symbol, 'sell', count, price, formatDate(new Date()));
-        console.log(`$${symbol} sell. New balance: ${this.balance}`);
+        return `$${symbol} sell. New balance: ${this.balance}`;
     }
 }
 
