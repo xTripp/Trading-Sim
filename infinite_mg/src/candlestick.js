@@ -1,25 +1,37 @@
-import React from 'react';
-import { useDrag } from 'react-dnd';
+import React, { useEffect, useState } from 'react';
 
-const CandlestickChart = ({ id }) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'chart',
-    item: { id },
-    collect: monitor => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
+function CandlestickChart({ id, websocketUrl }) {
+    const [messages, setMessages] = useState([]);
+    const [ws, setWs] = useState(null);
 
-  return (
-    <div
-      ref={drag}
-      className="chart"
-      style={{ opacity: isDragging ? 0.5 : 1 }}
-    >
-      {/* Render your candlestick chart here */}
-      <p>Chart {id}</p>
-    </div>
-  );
-};
+    useEffect(() => {
+        if (websocketUrl && !ws) {
+            const socket = new WebSocket(websocketUrl);
+            setWs(socket);
+
+            socket.onmessage = (event) => {
+                setMessages(prevMessages => [...prevMessages, event.data]);
+            };
+        }
+
+        return () => {
+            if (ws) {
+                ws.close();
+                setWs(null);
+            }
+        };
+    }, [websocketUrl, ws]);
+
+    return (
+        <div>
+            <h2>Candlestick Chart {id}</h2>
+            <ul>
+                {messages.map((message, index) => (
+                    <li key={index}>{message}</li>
+                ))}
+            </ul>
+        </div>
+    );
+}
 
 export default CandlestickChart;

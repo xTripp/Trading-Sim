@@ -21,14 +21,14 @@
 }
 
 .tile:last-child {
-    background-color: darkblue;
+    background-color: red;
     color: white;
 }
 
 .tile:hover {
-    background-color: lightcyan;
+    background-color: red;
 }
 
 .tile:active {
-    background-color: cyan;
+    background-color: red;
 }

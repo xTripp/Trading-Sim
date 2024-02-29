@@ -19,6 +19,7 @@
 require('dotenv').config({path: '../.env'});
 const finnhub = require('finnhub');
 const express = require('express');
+const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 
@@ -33,6 +34,9 @@ module.exports = new finnhub.DefaultApi();
 const subscriptions = {};
 const basic = new Trader('basic', './traders/basic/basic.js');
 basic.start();
+
+//app.use(express.static(path.join(__dirname, 'infinite_mg/build')));
+app.use(cors());
 
 app.get('/add', (req, res) => {
     const { name } = req.query;
