@@ -3,25 +3,22 @@ class Trader {
         this.name = name;
         this.path = path;
         this.trader = require(this.path);
+        this.ws = null;
     }
 
     start() {
-        this.trader.run();
+        this.ws = this.trader.run();
+        setInterval(() => {
+            this.ws.send(JSON.stringify({
+                bal: this.getBal(),
+                portfolio: this.getPortfolio(),
+                net: this.getNet()
+            }));
+        }, 1000);
     }
 
     stop() {
         this.trader.freeze();
-    }
-
-    load() {
-        const data = {
-            ws: this.getWs(),
-            bal: this.getBal(),
-            portfolio: this.getPortfolio(),
-            net: this.getNet()
-        };
-
-        return data;
     }
 
     sendMessage(msg) {

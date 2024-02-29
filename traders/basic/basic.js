@@ -33,22 +33,24 @@ function run(step = 1000) {
     ws = new WebSocket('ws://localhost:3556');
 
     ws.on('open', () => {
-        console.log('WebSocket connection established');
+        ws.send('WebSocket connection established');
     });
 
-    ws.on('message', (data) => {
-        if (data === 'init') {
-            
-        }
-    });
+    // ws.on('message', (data) => {
+    //     if (data === 'init') {
+    //         ws.send();  // SEND ALL INFO FOR INIT ON THE FRONTEND
+    //     }
+    // });
 
     ws.on('close', () => {
-        console.log('WebSocket connection closed');
+        ws.send('WebSocket connection closed');
     });
 
     ws.on('error', (error) => {
-        console.error('WebSocket error:', error);
+        ws.send('WebSocket error:', error);
     });
+
+    return ws;
 }
 
 function freeze() {
@@ -59,7 +61,6 @@ function freeze() {
 }
 
 module.exports = {
-    ws,
     portfolio,
     run,
     freeze

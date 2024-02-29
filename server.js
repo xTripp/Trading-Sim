@@ -1,7 +1,7 @@
 // CODE FLOW:
 //
 // Internal API  --  *server.js  --  Exchange API Handle
-//      |                |                    |
+//       \               |                    |
 // *React Frontend     Trader             exchange.js
 //                       |
 //           ./traders/<name>/<name>.js
@@ -16,7 +16,7 @@
 // 200 - Success
 // 500 - Internal Server Error
 
-require('dotenv').config();
+require('dotenv').config({path: '../.env'});
 const finnhub = require('finnhub');
 const express = require('express');
 const fs = require('fs');
