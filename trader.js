@@ -1,12 +1,13 @@
 class Trader {
-    constructor(name, path) {
-        this.name = name;
-        this.path = path;
-        this.trader = require(this.path);
-        this.ws = null;
+    constructor(path, port) {
+        this.trader = require(path);
+        this.port = port;
+        this.wss = new WebSocket.Server({ port: this.port });
     }
 
     start() {
+
+
         this.ws = this.trader.run();
         setInterval(() => {
             this.ws.send(JSON.stringify({
@@ -46,6 +47,6 @@ class Trader {
     }
 }
 
-module.exports = {
+export default {
     Trader
 };

@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-function CandlestickChart({ id, websocketUrl }) {
+function CandlestickChart({ id, wsInstance }) {
+    console.log('from candle:', wsInstance);
     const [messages, setMessages] = useState([]);
     const [ws, setWs] = useState(null);
 
     useEffect(() => {
-        if (websocketUrl && !ws) {
-            const socket = new WebSocket(websocketUrl);
+        if (wsInstance && !ws) {
+            const socket = wsInstance;
             setWs(socket);
 
             socket.onmessage = (event) => {
+                console.log('candle event:', event.data);
                 setMessages(prevMessages => [...prevMessages, event.data]);
             };
         }
@@ -20,7 +22,7 @@ function CandlestickChart({ id, websocketUrl }) {
                 setWs(null);
             }
         };
-    }, [websocketUrl, ws]);
+    }, [wsInstance, ws]);
 
     return (
         <div>

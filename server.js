@@ -24,7 +24,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const { Trader } = require('./trader.js');
+const { Trader } = require('./trader.js').default;
 
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = process.env.API_KEY;
@@ -32,8 +32,6 @@ api_key.apiKey = process.env.API_KEY;
 module.exports = new finnhub.DefaultApi();
 
 const subscriptions = {};
-const basic = new Trader('basic', './traders/basic/basic.js');
-basic.start();
 
 //app.use(express.static(path.join(__dirname, 'infinite_mg/build')));
 app.use(cors());

@@ -2,7 +2,7 @@ const fs = require('fs');
 
 class Journal {
     constructor(name) {
-        this.path = `./traders/${name}/${name}.csv`;
+        this.path = `../traders/${name}/${name}.csv`;
     }
 
     recordTrade(symbol, type, count, price, time) {

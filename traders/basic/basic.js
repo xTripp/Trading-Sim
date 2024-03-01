@@ -15,6 +15,7 @@ function buyLowSellHigh(stock) {
             if (prev[stock] !== undefined) {
                 if (data.c > prev[stock]) {
                     ws.send(portfolio.buy(stock, 1, data.c));
+                    console.log('sent buy')
                 } else if (data.c < prev[stock]) {
                     ws.send(portfolio.sell(stock, 1, data.c));
                 }
@@ -25,30 +26,29 @@ function buyLowSellHigh(stock) {
 
 let stockIndex = 0;
 function run(step = 1000) {
+    ws = new WebSocket('ws://localhost:3556');
+
+    ws.onopen = () => {
+        console.log('WebSocket connection established');
+    };
+
+    ws.onmessage = (event) => {
+        console.log('from basic:', event.data);
+    };
+
+    ws.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+
+    ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+
+    // Start sending messages based on the specified step interval
     heartbeat = setInterval(() => {
         buyLowSellHigh(interest[stockIndex]);
         stockIndex = (stockIndex + 1) % interest.length;
     }, step);
-
-    ws = new WebSocket('ws://localhost:3556');
-
-    ws.on('open', () => {
-        ws.send('WebSocket connection established');
-    });
-
-    // ws.on('message', (data) => {
-    //     if (data === 'init') {
-    //         ws.send();  // SEND ALL INFO FOR INIT ON THE FRONTEND
-    //     }
-    // });
-
-    ws.on('close', () => {
-        ws.send('WebSocket connection closed');
-    });
-
-    ws.on('error', (error) => {
-        ws.send('WebSocket error:', error);
-    });
 
     return ws;
 }
