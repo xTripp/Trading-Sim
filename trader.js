@@ -5,7 +5,7 @@ class Trader {
         this.trader = require(path);
         this.port = port;
         this.wss = new WebSocket.Server({ port: port });
-        this.wss.on('connection', this.handleConnection.bind(this));
+        this.wss.on('connection', this.handleConnection.bind(this)); // Ensure correct binding
     }
 
     start() {
@@ -37,16 +37,13 @@ class Trader {
     }
 
     handleConnection(ws) {
-        console.log('External WebSocket connected');
-
-        ws.on('message', (message) => {
-            console.log(`Received message: ${message} from WebSocket`);
-            // You can perform additional actions here if needed
-        });
-
-        ws.on('close', () => {
-            console.log('External WebSocket disconnected');
-            // You can perform additional actions here if needed
+        ws.on('message', (message) => { // Using arrow function for correct 'this' binding
+            this.wss.clients.forEach((client) => { // Ensure 'this.wss' is defined
+                if (client !== ws && client.readyState === WebSocket.OPEN) {
+                    console.log(message);
+                    client.send(JSON.stringify(message));
+                }
+            });
         });
     }
 }

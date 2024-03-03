@@ -25,8 +25,6 @@ require('dotenv').config({path: '../.env'});
 const finnhub = require('finnhub');
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
 
 const app = express();
 const { Trader } = require('./trader.js');
@@ -56,6 +54,7 @@ app.get('/add', (req, res) => {
 app.get('/remove', (req, res) => {
     const { name } = req.query;
 
+    // need to handle deleting wss and all ws
     delete subscriptions[name];
     res.sendStatus(200);
 });

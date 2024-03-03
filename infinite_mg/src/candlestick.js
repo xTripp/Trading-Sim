@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+const decoder = new TextDecoder('utf-8')
+
 function CandlestickChart({ id, port }) {
     const [messages, setMessages] = useState([]);
     const [ws, setWs] = useState(null);
@@ -14,7 +16,7 @@ function CandlestickChart({ id, port }) {
             };
     
             socket.onmessage = (event) => {
-                console.log('Received message:', event.data);
+                console.log('Received message:', decoder.decode(event.data.data));
                 setMessages(prevMessages => [...prevMessages, event.data]);
             };
     
