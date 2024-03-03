@@ -1,0 +1,73 @@
+.tile {
+    height: 500px;
+    width: 800px;
+    display: grid;
+    grid:
+        "tile-action-bar" 20px
+        "tile-main-content" 1fr
+        / 1fr;
+    background-color: #cccccc33;
+    border: 2px outset #87fa52;
+}
+
+.add-tile {
+    height: 500px;
+    width: 800px;
+    color: white;
+    background-color: lightblue;
+    cursor: pointer;
+}
+
+.add-tile:hover {
+    background-color: lightskyblue;
+}
+
+.tile-action-bar {
+    background-color: #555;
+    border: 1px solid #222;
+    border-bottom: 2px ridge #222;
+}
+
+.tile-main-content {
+    display: grid;
+    grid:
+        "tile-main-panel tile-side-panel" 1fr
+        / 1fr 0.4fr;
+}
+
+.tile-main-panel {
+    display: grid;
+    grid:
+        "tile-balance" 50px
+        "tile-candles" 1fr
+        / 1fr;
+}
+
+.tile-side-panel {
+    display: grid;
+    grid:
+        "tile-portfolio" 1fr
+        "tile-status" 50px
+        / 1fr;
+}
+
+.tile-balance {
+    color: whitesmoke;
+}
+
+.tile-net {
+    font-size: 36px;
+    margin-right: 8px;
+}
+
+.tile-daily {
+    font-size: 24px;
+}
+
+.tile-candles {
+    border: 1px solid red;
+}
+
+.tile-portfolio {
+    
+}

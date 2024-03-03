@@ -5,7 +5,7 @@ class Trader {
         this.trader = require(path);
         this.port = port;
         this.wss = new WebSocket.Server({ port: port });
-        this.wss.on('connection', this.handleConnection.bind(this)); // Ensure correct binding
+        this.wss.on('connection', this.handleConnection.bind(this));
     }
 
     start() {
@@ -36,12 +36,13 @@ class Trader {
         return net / 100;
     }
 
+    // enables the WSS to act as a message relay between the trader script and the frontend
     handleConnection(ws) {
-        ws.on('message', (message) => { // Using arrow function for correct 'this' binding
-            this.wss.clients.forEach((client) => { // Ensure 'this.wss' is defined
+        ws.on('message', (message) => {
+            this.wss.clients.forEach((client) => {
+                // send message to all open clients except the sender
                 if (client !== ws && client.readyState === WebSocket.OPEN) {
-                    console.log(message);
-                    client.send(JSON.stringify(message));
+                    client.send(message);
                 }
             });
         });

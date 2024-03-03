@@ -29,15 +29,15 @@ const cors = require('cors');
 const app = express();
 const { Trader } = require('./trader.js');
 
+// move all exchange auth into exchange.js
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = process.env.API_KEY;
-
 module.exports = new finnhub.DefaultApi();
 
 const subscriptions = {};
 
-//app.use(express.static(path.join(__dirname, 'infinite_mg/build')));
-app.use(cors());
+//app.use(express.static(path.join(__dirname, 'infinite_mg/build')));  i think i need this for when building a version of the app
+app.use(cors());  // for security warning
 
 app.get('/add', (req, res) => {
     const { name } = req.query;
@@ -59,7 +59,7 @@ app.get('/remove', (req, res) => {
     res.sendStatus(200);
 });
 
-const PORT = process.env.PORT || 3555;
+const PORT = 3555;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

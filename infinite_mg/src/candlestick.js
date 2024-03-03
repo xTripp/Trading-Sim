@@ -1,41 +1,55 @@
 import React, { useEffect, useState } from 'react';
 
-const decoder = new TextDecoder('utf-8')
-
 function CandlestickChart({ id, port }) {
     const [messages, setMessages] = useState([]);
-    const [ws, setWs] = useState(null);
 
     useEffect(() => {
-        if (port && !ws) {
-            const socket = new WebSocket(`ws://localhost:${port}`);
-            setWs(socket);
+        let ws;
+
+        if (port) {
+            ws = new WebSocket(`ws://localhost:${port}`);
     
-            socket.onopen = () => {
+            ws.onopen = () => {
                 console.log('Frontend WebSocket connection established');
             };
     
-            socket.onmessage = (event) => {
-                console.log('Received message:', decoder.decode(event.data.data));
-                setMessages(prevMessages => [...prevMessages, event.data]);
+            ws.onmessage = (event) => {
+                handleReceivedMessage(event.data);
             };
     
-            socket.onclose = () => {
+            ws.onclose = () => {
                 console.log('Frontend WebSocket connection closed');
             };
     
-            socket.onerror = (err) => {
+            ws.onerror = (err) => {
                 console.error('Frontend WebSocket error:', err);
             };
-        }
     
-        return () => {
-            if (ws) {
-                ws.close();
-                setWs(null);
-            }
-        };
-    }, [port, ws]);
+            // Cleanup function
+            return () => {
+                if (ws) {
+                    ws.close();
+                }
+            };
+        }
+    }, [port]);
+
+    const handleReceivedMessage = (data) => {
+        if (typeof data === 'string') {
+            // Handle string data directly
+            setMessages(prevMessages => [...prevMessages, data]);
+        } else if (data instanceof Blob) {
+            // Handle Blob data using FileReader
+            const reader = new FileReader();
+            reader.onload = () => {
+                const messageString = reader.result;
+                setMessages(prevMessages => [...prevMessages, messageString]);
+            };
+            reader.readAsText(data);
+        } else {
+            console.error('Unsupported data type received:', data);
+        }
+    };
     
     return (
         <div>

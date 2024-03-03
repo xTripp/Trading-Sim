@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import Navbar from './navbar.js';
-import CandlestickChart from './candlestick.js';
+import Tile from './tile.js';
 import './App.css';
 import api from './api';
-
-function Tile({ id, children }) {
-    return (
-        <div className="tile" id={id}>
-            {children}
-        </div>
-    );
-}
 
 function App() {
     const [tiles, setTiles] = useState([]);
@@ -25,29 +15,24 @@ function App() {
                 }
             });
             const port = response.data.port;
-
             setTiles([...tiles, { id: `tile-${tiles.length}`, port }]);
-        } catch (error) {
-            console.error("Error adding tile:", error);
+        } catch (err) {
+            console.error("Error adding tile:", err);
         }
     };
 
     return (
-        <DndProvider backend={HTML5Backend}>
+        <div className="app-container">
             <Navbar />
-            <div className="App">
+            <div className="main-content">
                 <div className="grid-container">
-                    {tiles.map((tile, index) => (
-                        <Tile key={tile.id} id={tile.id}>
-                            <CandlestickChart id={tile.id} port={tile.port} />
-                        </Tile>
+                    {tiles.map((tile) => (
+                        <Tile key={tile.id} port={tile.port} />
                     ))}
-                    <div className="tile" onClick={addTile}>
-                        +
-                    </div>
+                    <div className="add-tile" onClick={addTile}>+</div>
                 </div>
             </div>
-        </DndProvider>
+        </div>
     );
 }
 
