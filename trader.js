@@ -1,29 +1,19 @@
+const WebSocket = require('ws');
+
 class Trader {
     constructor(path, port) {
         this.trader = require(path);
         this.port = port;
-        this.wss = new WebSocket.Server({ port: this.port });
+        this.wss = new WebSocket.Server({ port: port });
+        this.wss.on('connection', this.handleConnection.bind(this));
     }
 
     start() {
-
-
-        this.ws = this.trader.run();
-        setInterval(() => {
-            this.ws.send(JSON.stringify({
-                bal: this.getBal(),
-                portfolio: this.getPortfolio(),
-                net: this.getNet()
-            }));
-        }, 1000);
+        this.trader.run();
     }
 
     stop() {
         this.trader.freeze();
-    }
-
-    sendMessage(msg) {
-        this.trader.ws.send(msg);
     }
 
     getBal() {
@@ -45,8 +35,22 @@ class Trader {
     
         return net / 100;
     }
+
+    handleConnection(ws) {
+        console.log('External WebSocket connected');
+
+        ws.on('message', (message) => {
+            console.log(`Received message: ${message} from WebSocket`);
+            // You can perform additional actions here if needed
+        });
+
+        ws.on('close', () => {
+            console.log('External WebSocket disconnected');
+            // You can perform additional actions here if needed
+        });
+    }
 }
 
-export default {
+module.exports = {
     Trader
 };

@@ -2,7 +2,7 @@
 //
 // Internal API  --  *server.js  --  Exchange API Handle
 //       \               |                    |
-// *React Frontend     Trader             exchange.js
+// *React Frontend   Trader (WSS)         exchange.js
 //                       |
 //           ./traders/<name>/<name>.js
 //              /        |        \
@@ -16,6 +16,11 @@
 // 200 - Success
 // 500 - Internal Server Error
 
+// Ports:
+// 3000 - React App
+// 3555 - Express Server
+// 3556 - basic
+
 require('dotenv').config({path: '../.env'});
 const finnhub = require('finnhub');
 const express = require('express');
@@ -24,7 +29,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const { Trader } = require('./trader.js').default;
+const { Trader } = require('./trader.js');
 
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = process.env.API_KEY;
@@ -40,7 +45,7 @@ app.get('/add', (req, res) => {
     const { name } = req.query;
 
     try {
-        subscriptions[name] = new Trader(name, `./traders/${name}/${name}.js`);
+        subscriptions[name] = new Trader(`./traders/${name}/${name}.js`, 3556);
         subscriptions[name].start();
         return res.status(200).json(subscriptions[name]);
     } catch (err) {

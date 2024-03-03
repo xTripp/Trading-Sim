@@ -1,29 +1,40 @@
 import React, { useEffect, useState } from 'react';
 
-function CandlestickChart({ id, wsInstance }) {
-    console.log('from candle:', wsInstance);
+function CandlestickChart({ id, port }) {
     const [messages, setMessages] = useState([]);
     const [ws, setWs] = useState(null);
 
     useEffect(() => {
-        if (wsInstance && !ws) {
-            const socket = wsInstance;
+        if (port && !ws) {
+            const socket = new WebSocket(`ws://localhost:${port}`);
             setWs(socket);
-
+    
+            socket.onopen = () => {
+                console.log('Frontend WebSocket connection established');
+            };
+    
             socket.onmessage = (event) => {
-                console.log('candle event:', event.data);
+                console.log('Received message:', event.data);
                 setMessages(prevMessages => [...prevMessages, event.data]);
             };
+    
+            socket.onclose = () => {
+                console.log('Frontend WebSocket connection closed');
+            };
+    
+            socket.onerror = (err) => {
+                console.error('Frontend WebSocket error:', err);
+            };
         }
-
+    
         return () => {
             if (ws) {
                 ws.close();
                 setWs(null);
             }
         };
-    }, [wsInstance, ws]);
-
+    }, [port, ws]);
+    
     return (
         <div>
             <h2>Candlestick Chart {id}</h2>

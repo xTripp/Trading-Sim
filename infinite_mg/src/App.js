@@ -24,8 +24,9 @@ function App() {
                     name: 'basic'
                 }
             });
-            const ws = response.data.ws; // Assuming the response contains the websocketUrl
-            setTiles([...tiles, { id: `tile-${tiles.length}`, ws }]);
+            const port = response.data.port;
+
+            setTiles([...tiles, { id: `tile-${tiles.length}`, port }]);
         } catch (error) {
             console.error("Error adding tile:", error);
         }
@@ -38,7 +39,7 @@ function App() {
                 <div className="grid-container">
                     {tiles.map((tile, index) => (
                         <Tile key={tile.id} id={tile.id}>
-                            <CandlestickChart id={tile.id} wsInstance={tile.ws} />
+                            <CandlestickChart id={tile.id} port={tile.port} />
                         </Tile>
                     ))}
                     <div className="tile" onClick={addTile}>
