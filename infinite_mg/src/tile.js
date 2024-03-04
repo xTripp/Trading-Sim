@@ -75,7 +75,7 @@ function Tile({ id, port }) {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>COIN (Coinbase Global, Inc.)</td>
+                                    <td>COIN (Coinbase Global, Inc.) Coinbase</td>
                                     <td>20 @ 124.19</td>
                                     <td>$207.00</td>
                                     <td>+1,656.20 (66.68%)</td>

@@ -1,6 +1,5 @@
 .tile {
     height: 500px;
-    width: 800px;
     display: grid;
     grid:
         "tile-action-bar" 20px
@@ -12,7 +11,6 @@
 
 .add-tile {
     height: 500px;
-    width: 800px;
     color: white;
     background-color: lightblue;
     cursor: pointer;
@@ -32,7 +30,7 @@
     display: grid;
     grid:
         "tile-main-panel tile-side-panel" 1fr
-        / 1fr 0.4fr;
+        / 0.6fr 0.4fr;
 }
 
 .tile-main-panel {
@@ -53,6 +51,7 @@
 
 .tile-balance {
     color: whitesmoke;
+    margin-left: 5px;
 }
 
 .tile-net {
@@ -68,6 +67,12 @@
     border: 1px solid red;
 }
 
-.tile-portfolio {
-    
+.tile-portfolio-table th {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.tile-portfolio-table td {
+    font-size: 11px;
+    font-weight: 500;
 }
