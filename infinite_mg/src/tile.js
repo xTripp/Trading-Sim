@@ -67,18 +67,30 @@ function Tile({ id, port }) {
                 <div className='tile-side-panel'>
                     <div className='tile-portfolio'>
                         <table className='tile-portfolio-table'>
+                            <colgroup>
+                                <col style={{width: '10%'}}/>
+                                <col style={{width: '30%'}}/>
+                                <col style={{width: '15%'}}/>
+                                <col style={{width: '45%'}}/>
+                            </colgroup>
                             <thead>
                                 <th>Asset</th>
-                                <th>#</th>
-                                <th>$</th>
-                                <th>G/L</th>
+                                <th>Position</th>
+                                <th>Last</th>
+                                <th>Gain</th>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>COIN (Coinbase Global, Inc.) Coinbase</td>
+                                    <td>COIN</td>
                                     <td>20 @ 124.19</td>
                                     <td>$207.00</td>
                                     <td>+1,656.20 (66.68%)</td>
+                                </tr>
+                                <tr>
+                                    <td>TSLA</td>
+                                    <td>10 @ 204.19</td>
+                                    <td>$207.00</td>
+                                    <td>+1,259.20 (56.68%)</td>
                                 </tr>
                             </tbody>
                         </table>
