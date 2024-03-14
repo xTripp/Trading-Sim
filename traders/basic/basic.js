@@ -47,7 +47,6 @@ function run(step = 1000) {
     heartbeat = setInterval(() => {
         buyLowSellHigh(interest[stockIndex]);
         stockIndex = (stockIndex + 1) % interest.length;
-        ws.send(stockIndex);
     }, step);
 }
 

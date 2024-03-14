@@ -7,6 +7,13 @@ function Tile({ id, port }) {
     useEffect(() => {
         let ws;
 
+        const handleClose = () => {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                console.log('close sent from tile')
+                ws.send(JSON.stringify({ type: 'close' }));
+            }
+        };
+
         if (port) {
             ws = new WebSocket(`ws://localhost:${port}`);
     
@@ -26,7 +33,11 @@ function Tile({ id, port }) {
                 console.error('Frontend WebSocket error:', err);
             };
     
+            window.addEventListener('beforeunload', handleClose);
+
             return () => {
+                window.removeEventListener('beforeunload', handleClose);
+
                 if (ws) {
                     ws.close();
                 }
@@ -62,7 +73,13 @@ function Tile({ id, port }) {
                         <span className='tile-net'>10,100.52</span>
                         <span className='tile-daily'>+100.52 (0.57%)</span>
                     </div>
-                    <div className='tile-candles'></div>
+                    <div className='tile-candles'>
+                        <ul>
+                            {messages.map((message, index) => (
+                                <li key={index}>{message}</li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
                 <div className='tile-side-panel'>
                     <div className='tile-portfolio'>
@@ -74,10 +91,12 @@ function Tile({ id, port }) {
                                 <col style={{width: '45%'}}/>
                             </colgroup>
                             <thead>
-                                <th>Asset</th>
-                                <th>Position</th>
-                                <th>Last</th>
-                                <th>Gain</th>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Position</th>
+                                    <th>Last</th>
+                                    <th>Gain</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 <tr>
@@ -100,12 +119,6 @@ function Tile({ id, port }) {
                     </div>
                 </div>
             </div>
-            {/* <h2>Candlestick Chart {id}</h2>
-            <ul>
-                {messages.map((message, index) => (
-                    <li key={index}>{message}</li>
-                ))}
-            </ul> */}
         </div>
     );
 }

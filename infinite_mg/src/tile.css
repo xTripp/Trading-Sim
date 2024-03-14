@@ -65,6 +65,7 @@
 
 .tile-candles {
     border: 1px solid red;
+    overflow: hidden;
 }
 
 .tile-portfolio-table {

@@ -1,3 +1,7 @@
+// Websocket Server Config
+//
+// - All messages require a type
+
 const WebSocket = require('ws');
 
 class Trader {
@@ -39,6 +43,14 @@ class Trader {
     // enables the WSS to act as a message relay between the trader script and the frontend
     handleConnection(ws) {
         ws.on('message', (message) => {
+            // if the message was a close command, close the server
+            console.log(message);
+            if (message.type === 'close') {
+                console.log('close received by server: ', message);
+                this.wss.close();
+                return;
+            }
+
             this.wss.clients.forEach((client) => {
                 // send message to all open clients except the sender
                 if (client !== ws && client.readyState === WebSocket.OPEN) {
