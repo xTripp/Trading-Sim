@@ -36,17 +36,25 @@ const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = process.env.API_KEY;
 module.exports = new finnhub.DefaultApi();
 
-// This code relies on all folders in the 'traders' directory to be named the same as their trading bot .js file
-// If files or folders that are not in the correct format are located in the 'traders' directory this will probably error out
-let router;
+// This code relies on all folders in the 'traders' directory to be named the same as its trading bot .js file
+// If files or folders that are not in the correct format are located in the 'traders' directory this will error out
+let router = {};
+let port = 3556
 fs.readdir('./traders', (err, traderDirs) => {
     if (err) {
         console.error('Failed to read \'traders\' directory: ', err);
+        return;
     }
     
     traderDirs.forEach(traderName => {
-        const traderPath = path.join('./traders', traderName, `${traderName}.js`)
-        router[traderName] = new Trader(traderPath);
+        const traderPath = path.join('./traders', traderName, `${traderName}.js`);
+
+        if (fs.existsSync(traderPath)) {
+            router[traderName] = new Trader(traderPath, port++);
+            router[traderName].start();
+        } else {
+            console.error(`Trader path '${traderPath}' does not exist`);
+        }
     });
 });
 
@@ -57,9 +65,7 @@ app.get('/add', (req, res) => {
     const { name } = req.query;
 
     try {
-        subscriptions[name] = null;
-        subscriptions[name].start();
-        return res.status(200).json(subscriptions[name]);
+        return res.status(200).json(router[name]);
     } catch (err) {
         return res.sendStatus(500);
     }
@@ -73,7 +79,6 @@ app.get('/remove', (req, res) => {
     res.sendStatus(200);
 });
 
-const PORT = 3555;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(3555, () => {
+    console.log(`Server is running on port 3555`);
 });

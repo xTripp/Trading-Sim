@@ -51,16 +51,18 @@
 
 .tile-balance {
     color: whitesmoke;
+    font-weight: 700;
     margin-left: 5px;
 }
 
 .tile-net {
-    font-size: 36px;
+    font-size: 40px;
     margin-right: 8px;
 }
 
 .tile-daily {
-    font-size: 24px;
+    font-size: 28px;
+    margin-left: 5px;
 }
 
 .tile-candles {
@@ -68,26 +70,53 @@
     overflow: hidden;
 }
 
-.tile-portfolio-table {
-    height: 100%;
-    width: 100%;
-    text-align: right;
+.tile-portfolio {
     border: 2px outset #222;
-    overflow-y: scroll;
 }
 
-.tile-portfolio-table th {
-    font-size: 14px;
-    font-weight: bold;
+.tile-portfolio-table {
+    height: fit-content;
+    width: 100%;
+    text-align: right;
+    border-collapse: collapse;
 }
 
 .tile-portfolio-table tr {
-    display: block;
-    height: min-content;
-    width: 100%;
+    border-bottom: 1px solid black;
+}
+
+.tile-portfolio-table th {
+    text-align: right;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .tile-portfolio-table td {
     font-size: 11px;
     font-weight: bold;
+}
+
+.tile-portfolio-table th:nth-child(1),
+.tile-portfolio-table td:nth-child(1) {
+    text-align: left;
+    width: 15%;
+}
+
+.tile-portfolio-table th:nth-child(2),
+.tile-portfolio-table td:nth-child(2) {
+    width: 25%;
+}
+
+.tile-portfolio-table th:nth-child(3),
+.tile-portfolio-table td:nth-child(3) {
+    width: 20%;
+}
+
+.tile-portfolio-table th:nth-child(4),
+.tile-portfolio-table td:nth-child(4) {
+    width: 40%;
+}
+
+.tile-portfolio-table tbody tr:nth-child(odd) {
+    background-color: #383838;
 }

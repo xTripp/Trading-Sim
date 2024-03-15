@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './tile.css';
+import './candlestick.js';
 
 function Tile({ id, port }) {
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         let ws;
-
-        const handleClose = () => {
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                console.log('close sent from tile')
-                ws.send(JSON.stringify({ type: 'close' }));
-            }
-        };
 
         if (port) {
             ws = new WebSocket(`ws://localhost:${port}`);
@@ -33,11 +27,7 @@ function Tile({ id, port }) {
                 console.error('Frontend WebSocket error:', err);
             };
     
-            window.addEventListener('beforeunload', handleClose);
-
             return () => {
-                window.removeEventListener('beforeunload', handleClose);
-
                 if (ws) {
                     ws.close();
                 }
@@ -84,12 +74,6 @@ function Tile({ id, port }) {
                 <div className='tile-side-panel'>
                     <div className='tile-portfolio'>
                         <table className='tile-portfolio-table'>
-                            <colgroup>
-                                <col style={{width: '10%'}}/>
-                                <col style={{width: '30%'}}/>
-                                <col style={{width: '15%'}}/>
-                                <col style={{width: '45%'}}/>
-                            </colgroup>
                             <thead>
                                 <tr>
                                     <th>Asset</th>
