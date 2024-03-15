@@ -12,8 +12,8 @@ class Trader {
         this.wss.on('connection', this.handleConnection.bind(this));
     }
 
-    start() {
-        this.trader.run();
+    start(port) {
+        this.trader.run(port);
     }
 
     stop() {

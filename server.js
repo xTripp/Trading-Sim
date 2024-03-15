@@ -40,18 +40,18 @@ module.exports = new finnhub.DefaultApi();
 // If files or folders that are not in the correct format are located in the 'traders' directory this will error out
 let router = {};
 let port = 3556
-fs.readdir('./traders', (err, traderDirs) => {
+fs.readdir('../traders', (err, traderDirs) => {
     if (err) {
         console.error('Failed to read \'traders\' directory: ', err);
         return;
     }
-    
+
     traderDirs.forEach(traderName => {
-        const traderPath = path.join('./traders', traderName, `${traderName}.js`);
+        const traderPath = path.join(__dirname, 'traders', traderName, `${traderName}.js`);
 
         if (fs.existsSync(traderPath)) {
-            router[traderName] = new Trader(traderPath, port++);
-            router[traderName].start();
+            router[traderName] = new Trader(traderPath, port);
+            router[traderName].start(port++);
         } else {
             console.error(`Trader path '${traderPath}' does not exist`);
         }
