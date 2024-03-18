@@ -10,6 +10,7 @@ class Trader {
         this.port = port;
         this.wss = new WebSocket.Server({ port: port });
         this.wss.on('connection', this.handleConnection.bind(this));
+        this.frontendClient = null;
     }
 
     start(port) {
@@ -43,6 +44,14 @@ class Trader {
     // enables the WSS to act as a message relay between the trader script and the frontend
     handleConnection(ws) {
         ws.on('message', (message) => {
+            const messageData = JSON.parse(message);
+            
+            if (messageData.type === 'identify' && messageData.name === 'frontend') {
+                this.frontendClient = ws;
+                return;
+            }
+            
+            // if nothing above triggered, broadcast the unfiltered message to all clients except the sender
             this.wss.clients.forEach((client) => {
                 // send message to all open clients except the sender
                 if (client !== ws && client.readyState === WebSocket.OPEN) {
@@ -50,6 +59,12 @@ class Trader {
                 }
             });
         });
+    }
+
+    tellFrontend(message) {
+        if (this.frontendClient && this.frontendClient.readyState === WebSocket.OPEN) {
+            this.frontendClient.send(message);
+        }
     }
 }
 

@@ -24,8 +24,8 @@ function buyLowSellHigh(stock) {
 }
 
 let stockIndex = 0;
-function run(step = 1000) {
-    ws = new WebSocket('ws://localhost:3556');
+function run(port, step = 1000) {
+    ws = new WebSocket(`ws://localhost:${port}`);
 
     ws.onopen = () => {
         ws.send('Trader WebSocket connection established');
