@@ -3,6 +3,7 @@ import './tile.css';
 import './candlestick.js';
 
 function Tile({ id, port }) {
+    let net, portfolio;
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
@@ -12,10 +13,12 @@ function Tile({ id, port }) {
             ws = new WebSocket(`ws://localhost:${port}`);
     
             ws.onopen = () => {
+                ws.send(JSON.stringify({type: 'identify', name: 'frontend'}));
                 console.log('Frontend WebSocket connection established');
             };
     
             ws.onmessage = (event) => {
+                console.log(event.data);
                 handleReceivedMessage(event.data);
             };
     
@@ -60,7 +63,7 @@ function Tile({ id, port }) {
             <div className='tile-main-content'>
                 <div className='tile-main-panel'>
                     <div className='tile-balance'>
-                        <span className='tile-net'>10,100.52</span>
+                        <span className='tile-net'>{net}</span>
                         <span className='tile-daily'>+100.52 (0.57%)</span>
                     </div>
                     <div className='tile-candles'>

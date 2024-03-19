@@ -66,8 +66,9 @@
 }
 
 .tile-candles {
+    height: 430px;
     border: 1px solid red;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .tile-portfolio {

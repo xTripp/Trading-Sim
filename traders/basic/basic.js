@@ -23,6 +23,11 @@ function buyLowSellHigh(stock) {
         });
 }
 
+// fix this so that it will return the last known current price of the stock.
+function getCurrentPrice(stock) {
+    return prev[stock];
+}
+
 let stockIndex = 0;
 function run(port, step = 1000) {
     ws = new WebSocket(`ws://localhost:${port}`);

@@ -4,44 +4,41 @@ class Portfolio {
     constructor(name) {
         this.portfolio = [];
         this.journal = new Journal(name);
-        this.balance = 10_000.00;
+        this.balance = 10000.00;
     }
 
-    // processes stock buys and adds the asset to the trader's portfolio. Arithmetic is done in cents to prevent long floating points. Trades are then added to the journal for movement tracking
     buy(symbol, count, price) {
-        const cost = Math.round(count * (price * 100)) / 100;  // Convert to cents and round for floating point arithmetic
-        if (cost > this.balance) {
+        const cost = (count * price).toFixed(2);
+        if (parseFloat(cost) > this.balance) {
             return `Insufficient funds. You are buying ${count} $${symbol} shares for $${cost}, but you only have $${this.balance}`;
         }
 
-        this.balance = Math.round((this.balance * 100) - (cost * 100)) / 100;  // Convert to cents and round for floating point arithmetic
+        this.balance = (this.balance - parseFloat(cost)).toFixed(2);
 
         const asset = {
             symbol: symbol,
             quantity: count,
-            price: price
+            price: parseFloat(price.toFixed(2))
         }
         this.portfolio.push(asset);
 
-        this.journal.recordTrade(symbol, 'buy', count, price, formatDate(new Date()));
-        return `$${symbol} buy @ ${price}. New balance: ${this.balance}`;
+        this.journal.recordTrade(symbol, 'buy', count, parseFloat(price.toFixed(2)), formatDate(new Date()));
+        return `$${symbol} buy @ ${parseFloat(price.toFixed(2))}. New balance: ${this.balance}`;
     }
 
-    // processes stock sells and removes the asset to the trader's portfolio. Arithmetic is done in cents to prevent long floating points. Trades are then added to the journal for movement tracking
     sell(symbol, count, price) {
         const total = this.portfolio.reduce((total, asset) => asset.symbol === symbol ? total + asset.quantity : total, 0);
         if (total < count) {
             return `Insufficient shares. You are selling ${count} $${symbol} shares but you have ${total}`;
         }
 
-        const profit = Math.round(count * (price * 100)) / 100;  // Convert to cents and round for floating point arithmetic
-        this.balance = Math.round((this.balance * 100) + (profit * 100)) / 100;  // Convert to cents and round for floating point arithmetic
-        
-    
+        const profit = (count * price).toFixed(2);
+        this.balance = (parseFloat(this.balance) + parseFloat(profit)).toFixed(2);
+
         let remainingCount = count;
         this.portfolio = this.portfolio.filter(asset => {
-            if (asset.symbol === symbol) {
-                if (asset.quantity >= remainingCount) {
+            if (asset.symbol === symbol && remainingCount !== 0) {
+                if (asset.quantity > remainingCount) {
                     asset.quantity -= remainingCount;
                     remainingCount = 0;
                 } else {
@@ -52,8 +49,8 @@ class Portfolio {
             return true;
         });
 
-        this.journal.recordTrade(symbol, 'sell', count, price, formatDate(new Date()));
-        return `$${symbol} sell @ ${price}. New balance: ${this.balance}`;
+        this.journal.recordTrade(symbol, 'sell', count, parseFloat(price.toFixed(2)), formatDate(new Date()));
+        return `$${symbol} sell @ ${parseFloat(price.toFixed(2))}. New balance: ${this.balance}`;
     }
 }
 

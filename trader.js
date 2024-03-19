@@ -11,14 +11,31 @@ class Trader {
         this.wss = new WebSocket.Server({ port: port });
         this.wss.on('connection', this.handleConnection.bind(this));
         this.frontendClient = null;
+        this.heartbeat = null;
     }
 
     start(port) {
         this.trader.run(port);
+
+        // check if frontendClient is defined, wait 100ms if not and check again. If another heartbeat tries to start (page refreshes, etc.) but there is already one active it will do nothing.
+        const waitForFrontendClient = () => {
+            if (this.frontendClient && this.heartbeat == null) {
+                this.heartbeat = setInterval(() => {
+                    this.tellFrontend(JSON.stringify({type: 'portfolio', val: this.getPortfolio()}));
+                    this.tellFrontend(JSON.stringify({type: 'net', val: this.getNet()}));
+                }, 1000);
+            } else if (this.heartbeat !== null){
+                return;
+            } else {
+                setTimeout(waitForFrontendClient, 100);
+            }
+        };
+        waitForFrontendClient();
     }
 
     stop() {
         this.trader.freeze();
+        clearInterval(this.heartbeat);
     }
 
     getBal() {
@@ -29,31 +46,36 @@ class Trader {
         return this.trader.portfolio.portfolio;
     }
 
-    // net is calculating based on the price bought at, not the actual value of the stock. fix this when it becomes important
     getNet() {
-        let net = Math.round(this.getBal() * 100);
+        let net = Math.round(this.getBal() * 100); // Convert balance to cents
         const portfolio = this.getPortfolio();
     
         for (const asset of portfolio) {
-            net += Math.round(asset.quantity * (asset.price * 100));
+            net += Math.round(asset.quantity * (this.trader.getCurrentPrice(asset.symbol) * 100)); // Convert price to cents
         }
     
-        return net / 100;
+        return (net / 100).toFixed(2);
     }
+    
 
     // enables the WSS to act as a message relay between the trader script and the frontend
+    // also handles specific server functions like frontend identificantion
     handleConnection(ws) {
         ws.on('message', (message) => {
-            const messageData = JSON.parse(message);
+            let messageData;
+            try {
+                messageData = JSON.parse(message);
+            } catch {
+                messageData = null;
+            }
             
-            if (messageData.type === 'identify' && messageData.name === 'frontend') {
+            if (messageData?.type === 'identify' && messageData?.name === 'frontend') {
                 this.frontendClient = ws;
                 return;
             }
             
             // if nothing above triggered, broadcast the unfiltered message to all clients except the sender
             this.wss.clients.forEach((client) => {
-                // send message to all open clients except the sender
                 if (client !== ws && client.readyState === WebSocket.OPEN) {
                     client.send(message);
                 }
@@ -61,6 +83,7 @@ class Trader {
         });
     }
 
+    // broadcast message to frontend
     tellFrontend(message) {
         if (this.frontendClient && this.frontendClient.readyState === WebSocket.OPEN) {
             this.frontendClient.send(message);
