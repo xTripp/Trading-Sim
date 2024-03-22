@@ -10,7 +10,7 @@ class Portfolio {
     buy(symbol, count, price) {
         const cost = (count * price).toFixed(2);
         if (parseFloat(cost) > this.balance) {
-            return `Insufficient funds. You are buying ${count} $${symbol} shares for $${cost}, but you only have $${this.balance}`;
+            return {type: 'info', val: `Insufficient funds. You are buying ${count} $${symbol} shares for $${cost}, but you only have $${this.balance}`};
         }
 
         this.balance = (this.balance - parseFloat(cost)).toFixed(2);
@@ -23,13 +23,13 @@ class Portfolio {
         this.portfolio.push(asset);
 
         this.journal.recordTrade(symbol, 'buy', count, parseFloat(price.toFixed(2)), formatDate(new Date()));
-        return `$${symbol} buy @ ${parseFloat(price.toFixed(2))}. New balance: ${this.balance}`;
+        return {type: 'info', val: `$${symbol} buy @ ${parseFloat(price.toFixed(2))}. New balance: ${this.balance}`};
     }
 
     sell(symbol, count, price) {
         const total = this.portfolio.reduce((total, asset) => asset.symbol === symbol ? total + asset.quantity : total, 0);
         if (total < count) {
-            return `Insufficient shares. You are selling ${count} $${symbol} shares but you have ${total}`;
+            return {type: 'info', val: `Insufficient shares. You are selling ${count} $${symbol} shares but you have ${total}`};
         }
 
         const profit = (count * price).toFixed(2);
@@ -50,7 +50,7 @@ class Portfolio {
         });
 
         this.journal.recordTrade(symbol, 'sell', count, parseFloat(price.toFixed(2)), formatDate(new Date()));
-        return `$${symbol} sell @ ${parseFloat(price.toFixed(2))}. New balance: ${this.balance}`;
+        return {type: 'info', val: `$${symbol} sell @ ${parseFloat(price.toFixed(2))}. New balance: ${this.balance}`};
     }
 }
 

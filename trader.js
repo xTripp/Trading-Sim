@@ -17,15 +17,13 @@ class Trader {
     start(port) {
         this.trader.run(port);
 
-        // check if frontendClient is defined, wait 100ms if not and check again. If another heartbeat tries to start (page refreshes, etc.) but there is already one active it will do nothing.
+        // check if frontendClient is defined - if not, wait 100ms if not and check again
         const waitForFrontendClient = () => {
-            if (this.frontendClient && this.heartbeat == null) {
+            if (this.frontendClient && this.heartbeat === null) {
                 this.heartbeat = setInterval(() => {
                     this.tellFrontend(JSON.stringify({type: 'portfolio', val: this.getPortfolio()}));
                     this.tellFrontend(JSON.stringify({type: 'net', val: this.getNet()}));
                 }, 1000);
-            } else if (this.heartbeat !== null){
-                return;
             } else {
                 setTimeout(waitForFrontendClient, 100);
             }
@@ -58,8 +56,8 @@ class Trader {
     }
     
 
-    // enables the WSS to act as a message relay between the trader script and the frontend
-    // also handles specific server functions like frontend identificantion
+    // enables the WSS to act as a message relay between the trader script and its node in the frontend
+    // also handles specific server functions like frontend node identificantion
     handleConnection(ws) {
         ws.on('message', (message) => {
             let messageData;
@@ -70,14 +68,16 @@ class Trader {
             }
             
             if (messageData?.type === 'identify' && messageData?.name === 'frontend') {
+                clearInterval(this.heartbeat);  // if there is already a heartbeat here, it means the page was refreshed. This will prevent multiple heartbeats from starting
                 this.frontendClient = ws;
+                console.log('frontend identified');
                 return;
             }
             
             // if nothing above triggered, broadcast the unfiltered message to all clients except the sender
             this.wss.clients.forEach((client) => {
                 if (client !== ws && client.readyState === WebSocket.OPEN) {
-                    client.send(message);
+                    client.send(JSON.stringify(message));
                 }
             });
         });
@@ -86,7 +86,7 @@ class Trader {
     // broadcast message to frontend
     tellFrontend(message) {
         if (this.frontendClient && this.frontendClient.readyState === WebSocket.OPEN) {
-            this.frontendClient.send(message);
+            this.frontendClient.send(JSON.stringify(message));
         }
     }
 }

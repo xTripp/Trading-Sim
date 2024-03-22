@@ -14,9 +14,9 @@ function buyLowSellHigh(stock) {
         .then(data => {
             if (prev[stock] !== undefined) {
                 if (data.c > prev[stock]) {
-                    ws.send(portfolio.buy(stock, 1, data.c));
+                    ws.send(JSON.stringify(portfolio.buy(stock, 1, data.c)));
                 } else if (data.c < prev[stock]) {
-                    ws.send(portfolio.sell(stock, 1, data.c));
+                    ws.send(JSON.stringify(portfolio.sell(stock, 1, data.c)));
                 }
             }
             prev[stock] = data.c;
@@ -65,5 +65,6 @@ function freeze() {
 module.exports = {
     portfolio,
     run,
-    freeze
+    freeze,
+    getCurrentPrice
 };

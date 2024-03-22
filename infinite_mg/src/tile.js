@@ -19,15 +19,24 @@ function Tile({ id, port }) {
     
             ws.onmessage = (event) => {
                 console.log(event.data);
-                handleReceivedMessage(event.data);
+                if (event.data instanceof Blob) {
+                    // Handle Blob data using FileReader
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const messageString = reader.result;
+                        setMessages(prevMessages => [...prevMessages, messageString]);
+                    };
+                // handleReceivedMessage(event.data);
+                }
             };
     
             ws.onclose = () => {
                 console.log('Frontend WebSocket connection closed');
             };
     
-            ws.onerror = (err) => {
-                console.error('Frontend WebSocket error:', err);
+            ws.onerror = (event) => {
+                console.error('Frontend WebSocket error:', event);
+                console.error('Error message:', event.message); // Log the error message
             };
     
             return () => {
@@ -38,22 +47,22 @@ function Tile({ id, port }) {
         }
     }, [port]);
 
-    const handleReceivedMessage = (data) => {
-        if (typeof data === 'string') {
-            // Handle string data directly
-            setMessages(prevMessages => [...prevMessages, data]);
-        } else if (data instanceof Blob) {
-            // Handle Blob data using FileReader
-            const reader = new FileReader();
-            reader.onload = () => {
-                const messageString = reader.result;
-                setMessages(prevMessages => [...prevMessages, messageString]);
-            };
-            reader.readAsText(data);
-        } else {
-            console.error('Unsupported data type received:', data);
-        }
-    };
+    // const handleReceivedMessage = (data) => {
+    //     if (typeof data === 'string') {
+    //         // Handle string data directly
+    //         setMessages(prevMessages => [...prevMessages, data]);
+    //     } else if (data instanceof Blob) {
+    //         // Handle Blob data using FileReader
+    //         const reader = new FileReader();
+    //         reader.onload = () => {
+    //             const messageString = reader.result;
+    //             setMessages(prevMessages => [...prevMessages, messageString]);
+    //         };
+    //         reader.readAsText(data);
+    //     } else {
+    //         console.error('Unsupported data type received:', data);
+    //     }
+    // };
 
     return (
         <div className="tile" id={id}>
