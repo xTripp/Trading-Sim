@@ -17,12 +17,12 @@ class Trader {
     start(port) {
         this.trader.run(port);
 
-        // check if frontendClient is defined - if not, wait 100ms if not and check again
+        // check if frontendClient is defined - if not, wait 100ms and check again
         const waitForFrontendClient = () => {
             if (this.frontendClient && this.heartbeat === null) {
                 this.heartbeat = setInterval(() => {
-                    this.tellFrontend(JSON.stringify({type: 'portfolio', val: this.getPortfolio()}));
-                    this.tellFrontend(JSON.stringify({type: 'net', val: this.getNet()}));
+                    this.tellFrontend({type: 'portfolio', val: this.getPortfolio()});
+                    this.tellFrontend({type: 'net', val: this.getNet()});
                 }, 1000);
             } else {
                 setTimeout(waitForFrontendClient, 100);
@@ -63,27 +63,31 @@ class Trader {
             let messageData;
             try {
                 messageData = JSON.parse(message);
+                console.log('message parsed: ', messageData)
             } catch {
                 messageData = null;
             }
             
             if (messageData?.type === 'identify' && messageData?.name === 'frontend') {
-                clearInterval(this.heartbeat);  // if there is already a heartbeat here, it means the page was refreshed. This will prevent multiple heartbeats from starting
                 this.frontendClient = ws;
-                console.log('frontend identified');
+                return;
+            }
+
+            if (messageData?.type === 'info') {
+                this.tellFrontend(messageData);
                 return;
             }
             
             // if nothing above triggered, broadcast the unfiltered message to all clients except the sender
             this.wss.clients.forEach((client) => {
                 if (client !== ws && client.readyState === WebSocket.OPEN) {
-                    client.send(JSON.stringify(message));
+                    client.send(message);
                 }
             });
         });
     }
 
-    // broadcast message to frontend
+    // broadcast JSON message to frontend
     tellFrontend(message) {
         if (this.frontendClient && this.frontendClient.readyState === WebSocket.OPEN) {
             this.frontendClient.send(JSON.stringify(message));

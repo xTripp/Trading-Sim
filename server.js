@@ -65,8 +65,12 @@ app.get('/add', (req, res) => {
     const { name } = req.query;
 
     try {
-        return res.status(200).json(router[name]);
+        const responseData = {
+            port: router[name].port
+        };
+        return res.status(200).json(responseData);
     } catch (err) {
+        console.log(err)
         return res.sendStatus(500);
     }
 });

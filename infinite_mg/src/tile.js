@@ -13,8 +13,8 @@ function Tile({ id, port }) {
             ws = new WebSocket(`ws://localhost:${port}`);
     
             ws.onopen = () => {
-                ws.send(JSON.stringify({type: 'identify', name: 'frontend'}));
                 console.log('Frontend WebSocket connection established');
+                ws.send(JSON.stringify({type: 'identify', name: 'frontend'}));
             };
     
             ws.onmessage = (event) => {
